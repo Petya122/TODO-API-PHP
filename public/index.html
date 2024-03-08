@@ -6,6 +6,31 @@
     <title>TODO API in PHP</title>
 </head>
 <body>
-    
+    <h1>TODO App</h1>
+    <form action="/add-todo" method="post">
+        <label for="feladat">Feladat:</label><br>
+        <input type="text" id="feladat" name="feladat" required><br>
+        <label for="completed">Befejezett?:</label>
+        <input type="checkbox" id="completed" name="completed" value="0"><br>
+        <button type="submit">Feladat hozzáadás</button>
+    </form>
+
+    <h2>Feladatok:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Feladat</th>
+                <th>Befejezett</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($tasks as $task): ?>
+                <tr>
+                    <td><?= htmlspecialchars($task['task']) ?></td>
+                    <td><?= $task['completed'] ? 'Igen' : 'Nem' ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 </body>
 </html>
