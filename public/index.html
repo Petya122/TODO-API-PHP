@@ -3,34 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TODO API in PHP</title>
+    <title>ToDo Projekt</title>
 </head>
 <body>
-    <h1>TODO App</h1>
-    <form action="/add-todo" method="post">
-        <label for="feladat">Feladat:</label><br>
+    <form id="todoform" method="post" action="/">
+        <label for="feladat">Feladat:</label>
         <input type="text" id="feladat" name="feladat" required><br>
-        <label for="completed">Befejezett?:</label>
-        <input type="checkbox" id="completed" name="completed" value="0"><br>
-        <button type="submit">Feladat hozzáadás</button>
+        <label for="kategoria">Kategória:</label>
+        <select id="kategoria" name="kategoria">
+            <option value="null">-- Válasz kategóriát --</option>
+            <option value="Munka">Munka</option>
+            <option value="Személyes">Személyes</option>
+            <option value="Otthoni">Otthoni</option>
+            <option value="Pénzügyi">Pénzügyi</option>
+            <option value="Oktatás">Oktatás</option>
+            <option value="Egészségügyi">Egészségügyi</option>
+            <option value="Utazás">Utazás</option>
+        </select>
+        <span id="error" style="color: red;"></span><br>
+
+        <label for="befejezve">Befejezve?:</label>
+        <input type="checkbox" id="befejezve" name="befejezve"><br>
+        
+        <button type="submit">Küldés</button>
     </form>
 
-    <h2>Feladatok:</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Feladat</th>
-                <th>Befejezett</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($tasks as $task): ?>
-                <tr>
-                    <td><?= htmlspecialchars($task['task']) ?></td>
-                    <td><?= $task['completed'] ? 'Igen' : 'Nem' ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+    <p id="feladatOutput"></p>
+
+    <script>
+        document.getElementById('todoform').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var kategoria = document.getElementById('kategoria').value;
+            var errorSpan = document.getElementById('error');
+
+            if (kategoria === 'null') {
+                errorSpan.textContent = 'Válassz kategóriát!';
+                return;
+            }
+
+            errorSpan.textContent = '';
+
+            var feladat = document.getElementById('feladat').value;
+            var feladatOutput = document.getElementById('feladatOutput');
+            
+            var befejezveCheckbox = document.getElementById('befejezve');
+            var befejezveText = befejezveCheckbox.checked ? 'Igen' : 'Nem';
+
+            feladatOutput.innerHTML += "<p>Feladat: " + feladat + ", Kategória: " + kategoria + ", Befejezve: " + befejezveText + "</p>";
+
+            document.getElementById('feladat').value = '';
+            document.getElementById('kategoria').value = 'null';
+            document.getElementById('befejezve').checked = false;
+        });
+    </script>
 </body>
 </html>

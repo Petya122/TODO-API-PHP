@@ -1,40 +1,32 @@
 <?php
-
-use Slim\Factory\AppFactory;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Factory\AppFactory;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+$databasePath = __DIR__ . '/todo.db';
+$db = new SQLite3($databasePath);
+$db->exec('CREATE TABLE IF NOT EXISTS todos (id INTEGER PRIMARY KEY, feladat TEXT, kategoria TEXT, befejezve BOOLEAN)');
+
 $app = AppFactory::create();
 
-$database = new SQLite3('todo.db');
+$app->post('/', function (Request $request, Response $response, $args) use ($db) {
+    $postData = $request->getParsedBody();
+    $feladat = $postData['feladat'] ?? '';
+    $kategoria = $postData['kategoria'] ?? '';
+    $befejezve = isset($postData['befejezve']) ? 1 : 0;
 
-$database->exec('CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY, task TEXT, completed INTEGER DEFAULT 0)');
+    $stmt = $db->prepare('INSERT INTO todos (feladat, kategoria, befejezve) VALUES (:feladat, :kategoria, :befejezve)');
+    $stmt->bindValue(':feladat', $feladat, SQLITE3_TEXT);
+    $stmt->bindValue(':kategoria', $kategoria, SQLITE3_TEXT);
+    $stmt->bindValue(':befejezve', $befejezve, SQLITE3_INTEGER);
+    $stmt->execute();
 
-$app->post('/add-todo', function (Request $request, Response $response, $args) use ($database) {
-    $data = $request->getParsedBody();
-    $task = $data['task'] ?? '';
-    $completed = isset($data['completed']) ? 1 : 0;
-
-    $statement = $database->prepare('INSERT INTO tasks (task, completed) VALUES (:task, :completed)');
-    $statement->bindValue(':task', $task, SQLITE3_TEXT);
-    $statement->bindValue(':completed', $completed, SQLITE3_INTEGER);
-    $statement->execute();
-
-    return $response->withHeader('Content-Type', 'application/json')->withJson(['success' => true]);
-});
-
-$app->get('/tasks', function (Request $request, Response $response, $args) use ($database) {
-    $tasks = [];
-    $result = $database->query('SELECT * FROM tasks');
-    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-        $tasks[] = $row;
-    }
-
-    return $response->withHeader('Content-Type', 'application/json')->withJson($tasks);
+    $responseBody = "<p>Feladat: $feladat, Kategória: $kategoria, Befejezve: " . ($befejezve ? 'Igen' : 'Nem') . "</p>";
+    $response->getBody()->write($responseBody);
+    return $response;
 });
 
 $app->run();
-
-$database->close();
+?>
