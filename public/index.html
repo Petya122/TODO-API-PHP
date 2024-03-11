@@ -30,32 +30,57 @@
 
     <p id="feladatOutput"></p>
 
-    <script>
+    <script defer>
+        function fetchAndDisplayTodos() {
+            fetch('/').then(response => response.json()).then(todos => {
+                const todosContainer = document.getElementById('todos');
+                todosContainer.innerHTML = '';
+                
+                todos.forEach(todo => {
+                    const { id, feladat, kategoria, befejezve } = todo;
+                    const todoElement = document.createElement('div');
+                    todoElement.innerHTML = `
+                        <p>ID: ${id}</p>
+                        <p>Feladat: ${feladat}</p>
+                        <p>Kategória: ${kategoria}</p>
+                        <p>Befejezve: ${befejezve ? 'Igen' : 'Nem'}</p>
+                        <hr>
+                    `;
+                    todosContainer.appendChild(todoElement);
+                });
+            }).catch(error => {
+                console.error('Error fetching todos:', error);
+            });
+        }
+    
+        fetchAndDisplayTodos();
+    
         document.getElementById('todoform').addEventListener('submit', function(event) {
             event.preventDefault();
-
+    
             var kategoria = document.getElementById('kategoria').value;
             var errorSpan = document.getElementById('error');
-
+    
             if (kategoria === 'null') {
                 errorSpan.textContent = 'Válassz kategóriát!';
                 return;
             }
-
+    
             errorSpan.textContent = '';
-
+    
             var feladat = document.getElementById('feladat').value;
             var feladatOutput = document.getElementById('feladatOutput');
             
             var befejezveCheckbox = document.getElementById('befejezve');
             var befejezveText = befejezveCheckbox.checked ? 'Igen' : 'Nem';
-
+    
             feladatOutput.innerHTML += "<p>Feladat: " + feladat + ", Kategória: " + kategoria + ", Befejezve: " + befejezveText + "</p>";
-
+    
             document.getElementById('feladat').value = '';
             document.getElementById('kategoria').value = 'null';
             document.getElementById('befejezve').checked = false;
         });
     </script>
+    
 </body>
 </html>
