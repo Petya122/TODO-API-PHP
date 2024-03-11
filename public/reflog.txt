@@ -1,5 +1,7 @@
-0df6fcb (HEAD -> main, origin/main, origin/HEAD) HEAD@{0}: commit: add reflog.txt to public
-8a5df5b HEAD@{1}: commit: fix for public
-2d91a7e HEAD@{2}: commit: add basic html + php function
-60e3de0 HEAD@{3}: commit: Add basic files
-62c077e HEAD@{4}: clone: from https://github.com/Petya122/TODO-API-PHP.git
+73cf343 (HEAD -> main, origin/main, origin/HEAD) HEAD@{0}: commit: fix/1
+914b8a2 HEAD@{1}: commit: reflog update
+0df6fcb HEAD@{2}: commit: add reflog.txt to public
+8a5df5b HEAD@{3}: commit: fix for public
+2d91a7e HEAD@{4}: commit: add basic html + php function
+60e3de0 HEAD@{5}: commit: Add basic files
+62c077e HEAD@{6}: clone: from https://github.com/Petya122/TODO-API-PHP.git
